@@ -30,7 +30,8 @@ const client = config.llm.apiKey
 
 export async function generateSqlWithLlm(
   question: string,
-  schemaSummary: string
+  schemaSummary: string,
+  feedback?: { previousSql?: string; error?: string }
 ): Promise<LlmResult> {
   if (config.llm.provider === "mock") {
     return {
@@ -49,7 +50,11 @@ export async function generateSqlWithLlm(
     "Prefer explicit joins. Avoid selecting unnecessary columns. " +
     "Use only tables and columns present in the provided schema summary. Do not invent fields.";
 
-  const userPrompt = `Database schema:\n${schemaSummary}\n\nQuestion: ${question}\n\nOutput JSON with {"sql": "...", "explanation": "..."}.`;
+  const feedbackBlock = feedback?.error
+    ? `\nPrevious SQL failed:\n${feedback.previousSql ?? ""}\nError: ${feedback.error}\nPlease fix the SQL using only valid tables/columns.\n`
+    : "";
+
+  const userPrompt = `Database schema:\n${schemaSummary}\n\nQuestion: ${question}\n${feedbackBlock}\nOutput JSON with {"sql": "...", "explanation": "..."}.`;
 
   let completion;
   try {

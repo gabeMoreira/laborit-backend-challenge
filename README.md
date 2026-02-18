@@ -53,6 +53,7 @@ POST /query
 - **Contexto do schema**: extraído do INFORMATION_SCHEMA e cacheado.
 - **Cache**: memória para perguntas repetidas.
 - **Schema enriquecido**: inclui comentários de colunas e relacionamentos (FK) para melhorar a precisão das consultas.
+- **Retry inteligente**: se a query falhar por coluna inexistente, o erro é enviado ao LLM e ele gera uma nova consulta automaticamente.
 
 ## Tomadas de decisão
 Optei por uma API simples e direta, com foco em segurança e clareza de resultado. A ideia é reduzir o tempo de análise sem abrir mão de controle: o SQL gerado passa por validação e recebe limite de linhas para evitar consultas muito grandes. Também incluí cache de perguntas repetidas para acelerar respostas e diminuir custo de LLM.

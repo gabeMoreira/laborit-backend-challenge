@@ -34,6 +34,23 @@ export async function runQuestion(question: string) {
     sqlCache.set(question, { sql, explanation }, sqlCacheTtlMs);
   }
 
-  const rows = await query(sql);
-  return { sql, explanation, rows };
+  try {
+    const rows = await query(sql);
+    return { sql, explanation, rows };
+  } catch (error) {
+    const message = (error as { message?: string })?.message ?? "";
+    if (/Unknown column/i.test(message)) {
+      const schema = await getSchemaSummary();
+      const retry = await generateSqlWithLlm(question, schema, {
+        previousSql: sql,
+        error: message
+      });
+      sql = ensureLimit(retry.sql);
+      explanation = `${retry.explanation} (retry after column error)`;
+      validateSql(sql);
+      const rows = await query(sql);
+      return { sql, explanation, rows };
+    }
+    throw error;
+  }
 }

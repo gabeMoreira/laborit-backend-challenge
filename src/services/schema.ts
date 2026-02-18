@@ -35,7 +35,10 @@ export async function getSchemaSummary() {
     [config.db.database]
   );
 
-  const grouped: Record<string, { column: string; type: string }[]> = {};
+  const grouped: Record<
+    string,
+    { column: string; type: string; comment: string }[]
+  > = {};
   for (const row of columns) {
     grouped[row.TABLE_NAME] ??= [];
     grouped[row.TABLE_NAME].push({
