@@ -21,6 +21,27 @@ API inteligente baseada em LLM para transformar perguntas em SQL e consultar o b
 3. Rode em desenvolvimento:
 	 - npm run dev
 
+### Exemplo de .env (valores mockados)
+```
+PORT=3000
+DB_HOST=seu-host-mysql
+DB_PORT=3306
+DB_USER=usuario_read_only
+DB_PASSWORD=sua_senha_aqui
+DB_NAME=northwind
+
+LLM_PROVIDER=groq
+OPENAI_API_KEY=seu_token_aqui
+OPENAI_MODEL=llama-3.1-8b-instant
+OPENAI_TEMPERATURE=0.2
+OPENAI_BASE_URL=
+OPENAI_REFERER=
+OPENAI_TITLE=
+
+MAX_ROWS=200
+SCHEMA_TTL_MINUTES=10
+```
+
 ## Endpoints
 - **POST** /query
 - **GET** /health
